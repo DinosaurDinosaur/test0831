@@ -54,7 +54,8 @@
                             }
 
                             /* hover 展開子選單 */
-                            .menu ul li:hover > ul {
+                            .menu ul li:hover > ul,
+                            .menu ul li.expanded > ul {
                             max-height: 500px;
                             transition: max-height 0.5s ease-in;
                             }
@@ -67,7 +68,8 @@
                             transition: background-color 0.3s;
                             }
 
-                            .menu ul li ul li:hover {
+                            .menu ul li ul li:hover,
+                            .menu ul li ul li.active {
                             background-color: orange;
                             }
 
@@ -108,11 +110,11 @@
                     <div class="left-section">
                     <nav class="menu">
                         <ul>
-                        <li>選單1
+                        <li id="menu1">選單1
                             <ul>
                             <li id="member-register">會員註冊</li>
                             <li id="member-query">會員查詢</li>
-                            <li>業務人員建立</li>
+                            <li id="staff-create">業務人員建立</li>
                             <li>業務人員查詢</li>
                             </ul>
                         </li>
@@ -149,30 +151,87 @@
   <script>
                         const special = document.getElementById("special-content");
                         const memberQuery = document.getElementById("member-query");
+                        const staffCreate = document.getElementById("staff-create");
+                        const menu1 = document.getElementById("menu1");
 
                         // 記錄目前 active 項目
                         let currentActive = null;
 
+                        // 處理子選單項目點擊事件
+                        function handleSubmenuClick(item, showSpecial = false) {
+                        return function(e) {
+                            e.stopPropagation();
+                            if(currentActive) currentActive.classList.remove("active");
+                            item.classList.add("active");
+                            currentActive = item;
+                            
+                            // 處理special內容顯示
+                            if (showSpecial) {
+                            special.classList.add("show");
+                            } else {
+                            special.classList.remove("show");
+                            }
+                            
+                            // 保持子選單展開狀態
+                            menu1.classList.add("expanded");
+                        };
+                        }
+
                         // 點擊會員查詢 → 顯示 special 並設定 active
-                        memberQuery.addEventListener("click", function(e) {
-                        e.stopPropagation();
-                        if(currentActive) currentActive.classList.remove("active");
-                        memberQuery.classList.add("active");
-                        currentActive = memberQuery;
-                        special.classList.add("show");
-                        });
+                        memberQuery.addEventListener("click", handleSubmenuClick(memberQuery, true));
+
+                        // 點擊業務人員建立 → 隱藏 special 並設定 active
+                        staffCreate.addEventListener("click", handleSubmenuClick(staffCreate, false));
 
                         // 監聽其他子選單點擊事件
                         document.querySelectorAll(".menu ul li ul li").forEach(li => {
-                        if(li !== memberQuery) {
-                            li.addEventListener("click", function() {
-                            special.classList.remove("show"); // 隱藏 special
+                        if(li !== memberQuery && li !== staffCreate) {
+                            li.addEventListener("click", function(e) {
+                            e.stopPropagation();
                             if(currentActive) currentActive.classList.remove("active");
-                            currentActive = null;
+                            li.classList.add("active");
+                            currentActive = li;
+                            special.classList.remove("show"); // 隱藏 special
+                            // 保持子選單展開狀態
+                            menu1.classList.add("expanded");
                             });
                         }
                         });
 
+                        // 處理主選單項目點擊事件
+                        function handleMainMenuClick() {
+                        // 收起"選單1"的子選單
+                        menu1.classList.remove("expanded");
+                        // 隱藏 special 內容
+                        special.classList.remove("show");
+                        }
+
+                        // 為所有主選單項目添加點擊事件處理程序
+                        document.querySelectorAll(".menu > ul > li").forEach(li => {
+                        if(li.id !== "menu1") {
+                            li.addEventListener("click", function() {
+                            // 移除當前active項目
+                            if(currentActive) currentActive.classList.remove("active");
+                            currentActive = null;
+                            // 處理主選單點擊
+                            handleMainMenuClick();
+                            });
+                        }
+                        });
+
+                        // 當滑鼠移動到"選單1"時，保持子選單展開狀態
+                        menu1.addEventListener("mouseenter", function() {
+                        if (currentActive && currentActive.closest("#menu1")) {
+                            menu1.classList.add("expanded");
+                        }
+                        });
+
+                        // 當滑鼠離開"選單1"時，如果沒有active項目則收起子選單
+                        menu1.addEventListener("mouseleave", function() {
+                        if (!currentActive || !currentActive.closest("#menu1")) {
+                            menu1.classList.remove("expanded");
+                        }
+                        });
   </script>
 </body>
 </html>
