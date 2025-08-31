@@ -5,105 +5,175 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>芝麻診所</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      overflow: hidden; /* 整個頁面不出現全域捲軸 */
-    }
-    .main-page {
-      display: flex;
-      height: 100vh; /* 版面固定滿版 */
-    }
-    .left-section {
-      width: 200px;
-      background-color: purple;
-      color: white;
-      overflow-y: auto; /* 捲軸只在左邊 */
-      height: 100vh;
-    }
-    .menu ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .menu ul li {
-      padding: 12px 15px;
-      cursor: pointer;
-    }
-    .menu ul li:hover {
-      background-color: green;
-    }
+                            body {
+                            margin: 0;
+                            font-family: Arial, sans-serif;
+                            background-color: #f2f2f2;
+                            overflow: hidden; /* 整個頁面不出現全域捲軸 */
+                            }
 
-    /* 子選單動畫效果 */
-    .menu ul li ul {
-      max-height: 0;              /* 預設高度 0 */
-      overflow: hidden;           /* 超出部分隱藏 */
-      background-color: green;
-      margin: 0;
-      /* padding-left: 20px; */
-      transition: max-height 0.5s ease-out; /* 動畫效果 */
-     
-    }
-    .menu ul li:hover > ul {
-      max-height: 500px;          /* hover 時展開到足夠高度 */
-      transition: max-height 0.5s ease-in;
-    }
+                            .main-page {
+                            display: flex;
+                            height: 100vh; /* 版面固定滿版 */
+                            }
 
-    .menu ul li ul li {
-      padding: 10px;
-      font-size: 14px;
-    }
-    .menu ul li ul li:hover {
-      background-color: orange;
-     
-    
-    }
+                            .left-section {
+                            width: 200px;
+                            background-color: purple;
+                            color: white;
+                            overflow-y: scroll; /* 左側捲軸永遠顯示 */
+                            height: 100vh;
+                            }
 
-    .right-section {
-      flex: 1;
-      padding: 20px;
-      background-color: white;
-      overflow: hidden; /* 右邊不要捲軸 */
-    }
+                            .menu ul {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                            }
+
+                            .menu ul li {
+                            padding: 12px 15px;
+                            cursor: pointer;
+                            transition: background-color 0.3s;
+                            }
+
+                            /* hover 或 active 都是綠色 */
+                            .menu ul li:hover,
+                            .menu ul li.active {
+                            background-color: green;
+                            color: white;
+                            }
+
+                            /* 子選單動畫效果 */
+                            .menu ul li ul {
+                            max-height: 0;
+                            overflow: hidden;
+                            background-color: green;
+                            margin: 0;
+                            transition: max-height 0.5s ease-out;
+                            }
+
+                            /* hover 展開子選單 */
+                            .menu ul li:hover > ul {
+                            max-height: 500px;
+                            transition: max-height 0.5s ease-in;
+                            }
+
+                            /* 子選單項目 */
+                            .menu ul li ul li {
+                            padding: 10px;
+                            font-size: 14px;
+                            background-color: green; /* 預設紫色 */
+                            transition: background-color 0.3s;
+                            }
+
+                            .menu ul li ul li:hover {
+                            background-color: orange;
+                            }
+
+                            /* 右側區塊 */
+                            .right-section {
+                            flex: 1;
+                            padding: 20px;
+                            background-color: white;
+                            overflow: hidden; /* 右邊不要捲軸 */
+                            }
+
+                            /* special 區塊預設隱藏 */
+                            .special {
+                            display: none;
+                            margin-top: 20px;
+                            padding: 15px;
+                            background-color: #eee;
+                            border: 1px solid #ccc;
+                            border-radius: 5px;
+                            }
+
+                            /* 顯示 special 時動畫 */
+                            .special.show {
+                            display: block;
+                            animation: fadeIn 0.5s ease-in;
+                            }
+
+                            /* special 淡入動畫 */
+                            @keyframes fadeIn {
+                            from { opacity: 0; transform: translateY(-10px); }
+                            to { opacity: 1; transform: translateY(0); }
+                            }
+
   </style>
 </head>
 <body>
-  <div class="main-page">
-    <div class="left-section">
-      <nav class="menu">
-        <ul>
-          <li>選單1
-            <ul>
-              <li>會員註冊</li>
-              <li>會員查詢</li>
-              <li>會員註冊</li>
-              <li>會員查詢</li>
-            </ul>
-          </li>
-          <li>選單2</li>
-          <li>選單3</li>
-          <li>選單4</li>
-          <li>選單5</li>
-          <li>選單6</li>
-          <li>選單7</li>
-          <li>選單8</li>
-          <li>選單9</li>
-          <li>選單10</li>
-          <li>選單11</li>
-          <li>選單12</li>
-          <li>選單13</li>
-          <li>選單14</li>
-          <li>選單15</li>
-        </ul>
-      </nav>
-    </div>
+                <div class="main-page">
+                    <div class="left-section">
+                    <nav class="menu">
+                        <ul>
+                        <li>選單1
+                            <ul>
+                            <li id="member-register">會員註冊</li>
+                            <li id="member-query">會員查詢</li>
+                            <li>業務人員建立</li>
+                            <li>業務人員查詢</li>
+                            </ul>
+                        </li>
+                        <li>選單2</li>
+                        <li>選單3</li>
+                        <li>選單4</li>
+                        <li>選單5</li>
+                        <li>選單6</li>
+                        <li>選單7</li>
+                        <li>選單8</li>
+                        <li>選單9</li>
+                        <li>選單10</li>
+                        <li>選單11</li>
+                        <li>選單12</li>
+                        <li>選單13</li>
+                        <li>選單14</li>
+                        <li>選單15</li>
+                        </ul>
+                    </nav>
+                    </div>
 
-    <div class="right-section">
-      <h1>芝麻診所</h1>
-      <p>這裡是右邊的主要內容區域。</p>
-      <p>右邊不會再出現捲軸，內容會固定顯示。</p>
-    </div>
-  </div>
+                    <div class="right-section">
+                    <h1>芝麻診所</h1>
+                    <p>這裡是右邊的主要內容區域。</p>
+                    <p>右邊不會再出現捲軸，內容會固定顯示。</p>
+
+                    <div class="special" id="special-content">
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti nihil a maiores dolore, quasi quae et sequi distinctio delectus excepturi. Exercitationem accusamus, omnis excepturi voluptate eius voluptatibus consectetur sint tempora.</p>
+                    </div>
+                    </div>
+                </div>
+  
+
+  <script>
+                        const special = document.getElementById("special-content");
+                        const memberQuery = document.getElementById("member-query");
+
+                        // 記錄目前 active 項目
+                        let currentActive = null;
+
+                        // 點擊會員查詢 → 顯示 special 並設定 active
+                        memberQuery.addEventListener("click", function(e) {
+                        e.stopPropagation();
+                        if(currentActive) currentActive.classList.remove("active");
+                        memberQuery.classList.add("active");
+                        currentActive = memberQuery;
+                        special.classList.add("show");
+                        });
+
+                        // 監聽其他子選單點擊事件
+                        document.querySelectorAll(".menu ul li ul li").forEach(li => {
+                        if(li !== memberQuery) {
+                            li.addEventListener("click", function() {
+                            special.classList.remove("show"); // 隱藏 special
+                            if(currentActive) currentActive.classList.remove("active");
+                            currentActive = null;
+                            });
+                        }
+                        });
+
+  </script>
 </body>
 </html>
+
